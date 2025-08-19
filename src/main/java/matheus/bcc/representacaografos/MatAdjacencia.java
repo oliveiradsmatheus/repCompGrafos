@@ -12,6 +12,7 @@ public class MatAdjacencia {
         }
         return orientado;
     }*/
+
     public static boolean isOrientado(String[][] matriz, int linhas, int colunas) {
         boolean orientado = false;
 

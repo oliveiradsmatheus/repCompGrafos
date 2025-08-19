@@ -15,7 +15,6 @@ public class MatIncidencia {
     public static boolean verificarSimples(String[][] mat, int linhas) {
         boolean simples = true;
         int cont;
-        boolean flag;
 
         for (int c = 0; c < mat[0].length && simples; c++) {
             cont = 0;
@@ -26,23 +25,15 @@ public class MatIncidencia {
                 simples = false;
         }
 
-        for (int l = 0; l < linhas - 1 && simples; l++) {
-            flag = true;
-            for (int c = 0; c < mat[0].length && flag; c++) {
-                if (!mat[l][c].equals("0")) {
-                    cont = 0;
-                    for (int i = c + 1; i < mat[0].length && flag; i++) {
-                        if (!mat[l][i].equals("0")) {
-                            cont++;
-                            int j;
-                            for (j = l+1 ; j < linhas && mat[j][c].equals(mat[j][i]); j++);
-                            if (j == linhas)
-                                simples = flag = false;
-                        }
-                    }
-                    if (cont<2)
+        for (int c1 = 0; c1 < mat[0].length - 1 && simples; c1++) {
+            for (int c2 = c1 + 1; c2 < mat[0].length && simples; c2++) {
+                boolean flag = true;
+                for (int l = 0; l < linhas && flag; l++) {
+                    if (!mat[l][c1].equals(mat[l][c2]))
                         flag = false;
                 }
+                if (flag)
+                    simples = false;
             }
         }
         return simples;
