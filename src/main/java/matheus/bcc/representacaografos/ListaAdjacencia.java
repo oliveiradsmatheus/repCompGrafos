@@ -1,19 +1,21 @@
 package matheus.bcc.representacaografos;
 
 public class ListaAdjacencia {
-    public static boolean isOrientado(String[][] mat) {
+    public static boolean verificarOrientado(String[][] mat) {
         return true;
     }
 
-    public static boolean isSimples(String[][] mat) {
+    public static boolean verificarSimples(String[][] mat) {
+
+
         return true;
     }
 
-    public static boolean isRegular(String[][] mat) {
+    public static boolean verificarRegular(String[][] mat) {
         return true;
     }
 
-    public static boolean isCompleto(String[][] mat) {
+    public static boolean verificarCompleto(String[][] mat) {
         return true;
     }
 }

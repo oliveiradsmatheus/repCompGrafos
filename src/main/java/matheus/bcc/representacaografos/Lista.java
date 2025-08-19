@@ -5,6 +5,12 @@ public class Lista {
     char peso;
     Lista prox;
 
+    public Lista(char info) {
+        this.info = info;
+        this.peso = 0;
+        this.prox = null;
+    }
+
     public Lista(char info, char peso) {
         this.info = info;
         this.peso = peso;

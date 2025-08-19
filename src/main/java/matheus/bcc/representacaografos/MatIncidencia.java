@@ -114,9 +114,6 @@ public class MatIncidencia {
 
         k = (linhas*(linhas-1));
 
-        System.out.println(k);
-        System.out.println(cont);
-
         if (k == cont)
             return k/2;
         return -1;

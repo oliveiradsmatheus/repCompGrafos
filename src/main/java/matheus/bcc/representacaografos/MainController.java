@@ -6,9 +6,12 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 import java.io.File;
 import java.io.RandomAccessFile;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainController {
     public Label tipo;
@@ -21,26 +24,30 @@ public class MainController {
     public HBox hbRecepcao;
     public Label recepcao;
     public Label labelK;
+    public VBox vbMatriz;
+    public VBox matrizContainer;
+    public VBox listaContainer;
+    public VBox lista;
     @FXML
-    private GridPane matrixGrid;
+    private GridPane matrizGrid;
     private String[][] matriz;
     private int linhas, colunas;
     private char[] vertices;
     private String[] incidencias;
 
     private void exibirMatriz() {
-        matrixGrid.getChildren().clear();
+        matrizGrid.getChildren().clear();
 
         for (int i = 0; i < incidencias.length; i++) {
             Label headerLabel = new Label(String.valueOf(incidencias[i]));
             headerLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: white;");
-            matrixGrid.add(criarPainel(headerLabel, "#77dd77"), i + 1, 0);
+            matrizGrid.add(criarPainel(headerLabel, "#77dd77"), i + 1, 0);
         }
 
         for (int i = 0; i < vertices.length; i++) {
             Label headerLabel = new Label(String.valueOf(vertices[i]));
             headerLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: white;");
-            matrixGrid.add(criarPainel(headerLabel, "#77dd77"), 0, i + 1);
+            matrizGrid.add(criarPainel(headerLabel, "#77dd77"), 0, i + 1);
         }
 
         for (int i = 0; i < linhas; i++) {
@@ -52,7 +59,7 @@ public class MainController {
                 String textColor = (!matriz[i][j].equals("0")) ? "#666666" : "#cccccc";
                 valueLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: " + textColor + ";");
 
-                matrixGrid.add(criarPainel(valueLabel, bgColor), j + 1, i + 1);
+                matrizGrid.add(criarPainel(valueLabel, bgColor), j + 1, i + 1);
             }
         }
     }
@@ -69,6 +76,8 @@ public class MainController {
     }
 
     public void onCarregarMA() {
+        listaContainer.setVisible(false);
+        matrizContainer.setVisible(true);
         File arq = Arquivo.carregarArquivo();
         if (arq != null) {
             tipo.setText("Matriz de Adjacência");
@@ -102,55 +111,43 @@ public class MainController {
                 raf.close();
                 exibirMatriz();
 
+                boolean simp = MatAdjacencia.verificarSimples(matriz, colunas);
+
                 //simples
-                if(MatAdjacencia.isSimples(matriz,colunas))
-                    simples.setText("Sim");
-                else
-                    simples.setText("Não");
-
+                simples.setText(simp ? "Sim" : "Não");
                 //orientado
-                if(MatAdjacencia.isOrientado(matriz,linhas,colunas)) //digrafo
-                {
-                    orientado.setText("Sim");
-
-                    //regular
-                    if(MatAdjacencia.isDigrafoRegular(matriz,linhas,colunas))
-                        regular.setText("Sim");
-                    else
-                        regular.setText("Não");
-
-                    //completo
-                    if (MatAdjacencia.isDigrafoCompleto(matriz,colunas))
-                        completo.setText("Sim");
-                    else
-                        completo.setText("Não");
+                orientado.setText(MatAdjacencia.verificarOrientado(matriz, linhas, colunas) ? "Sim" : "Não");
+                //regular
+                int r = MatAdjacencia.verificarRegular(matriz, linhas);
+                regular.setText(r == -1 ? "Não" : r + "-regular");
+                hbRecepcao.setVisible(false);
+                hbEmissao.setVisible(false);
+                //completo
+                if (simp && r != -1) {
+                    int k = MatAdjacencia.verificarCompleto(matriz, linhas);
+                    if (k != -1) {
+                        completo.setVisible(true);
+                        labelK.setVisible(true);
+                        labelK.setText("K-" + linhas);
+                    } else {
+                        completo.setVisible(false);
+                        labelK.setVisible(false);
+                    }
+                } else {
+                    completo.setVisible(false);
+                    labelK.setVisible(false);
                 }
-                else{ //grafo
-
-                    orientado.setText("Não");
-
-                    //regular
-                    if(MatAdjacencia.isGrafoRegular(matriz,linhas,colunas))
-                        regular.setText("Sim");
-                    else
-                        regular.setText("Não");
-
-                    //completo
-                    if (MatAdjacencia.isGrafoCompleto(matriz,linhas,colunas))
-                        completo.setText("Sim");
-                    else
-                        completo.setText("Não");
-                }
-
 
             } catch (Exception e) {
-                matrixGrid.getChildren().clear();
+                matrizGrid.getChildren().clear();
                 tipo.setText("Arquivo inválido");
             }
         }
     }
 
     public void onCarregarMI() {
+        listaContainer.setVisible(false);
+        matrizContainer.setVisible(true);
         File arq = Arquivo.carregarArquivo();
         if (arq != null) {
             tipo.setText("Matriz de Incidência");
@@ -221,14 +218,39 @@ public class MainController {
                 }
 
             } catch (Exception e) {
-                matrixGrid.getChildren().clear();
+                matrizGrid.getChildren().clear();
                 tipo.setText("Arquivo inválido");
             }
         }
     }
 
     public void onCarregarLA() {
-        File arq = Arquivo.carregarArquivo();
+        matrizContainer.setVisible(false);
+        listaContainer.setVisible(true);
+
+        // 2. Limpe a lista anterior (caso o botão seja clicado novamente)
+        lista.getChildren().clear();
+
+        // 3. Obtenha ou crie os dados da lista de adjacência
+        //    (Exemplo com dados fixos)
+        List<String> dadosDaLista = Arrays.asList(
+                "Vértice 1 -> [2, 3]",
+                "Vértice 2 -> [1, 4]",
+                "Vértice 3 -> [1]",
+                "Vértice 4 -> [2]"
+        );
+
+        // 4. Popule o VBox com as strings da lista
+        for (String linha : dadosDaLista) {
+            Label labelLinha = new Label(linha);
+            labelLinha.setStyle("-fx-font-size: 16px; -fx-font-family: 'Consolas';"); // Estilo opcional
+            lista.getChildren().add(labelLinha);
+        }
+
+        // Atualize o painel esquerdo se necessário
+        orientado.setText("Sim");
+
+        /*File arq = Arquivo.carregarArquivo();
         if (arq != null) {
             tipo.setText("Lista de Adjacência");
             try {
@@ -237,9 +259,9 @@ public class MainController {
                 raf.close();
                 exibirLista();
             } catch (Exception e) {
-                matrixGrid.getChildren().clear();
+                matrizGrid.getChildren().clear();
                 tipo.setText("Arquivo inválido");
             }
-        }
+        }*/
     }
 }
