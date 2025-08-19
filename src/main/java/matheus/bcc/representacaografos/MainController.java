@@ -1,6 +1,5 @@
 package matheus.bcc.representacaografos;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -9,10 +8,13 @@ import javafx.scene.layout.StackPane;
 
 import java.io.File;
 import java.io.RandomAccessFile;
-import java.util.Arrays;
 
 public class MainController {
     public Label tipo;
+    public Label simples;
+    public Label regular;
+    public Label orientado;
+    public Label completo;
     @FXML
     private GridPane matrixGrid;
     private String[][] matriz;
@@ -23,16 +25,18 @@ public class MainController {
     private void exibirMatriz() {
         matrixGrid.getChildren().clear();
 
-        for (int i = 0; i < linhas; i++) {
+        for (int i = 0; i < incidencias.length; i++) {
             Label headerLabel = new Label(String.valueOf(incidencias[i]));
             headerLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: white;");
             matrixGrid.add(criarPainel(headerLabel, "#77dd77"), i + 1, 0);
         }
-        for (int i = 0; i < colunas; i++) {
+
+        for (int i = 0; i < vertices.length; i++) {
             Label headerLabel = new Label(String.valueOf(vertices[i]));
             headerLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: white;");
             matrixGrid.add(criarPainel(headerLabel, "#77dd77"), 0, i + 1);
         }
+
         for (int i = 0; i < linhas; i++) {
             for (int j = 0; j < colunas; j++) {
                 Label valueLabel = new Label(String.valueOf(matriz[i][j]));
@@ -47,6 +51,9 @@ public class MainController {
         }
     }
 
+    private void exibirLista() {
+    }
+
     private StackPane criarPainel(Label label, String bgColor) {
         StackPane pane = new StackPane(label);
         pane.setPrefSize(40, 40);
@@ -55,7 +62,7 @@ public class MainController {
         return pane;
     }
 
-    public void onCarregarMA(ActionEvent actionEvent) {
+    public void onCarregarMA() {
         File arq = Arquivo.carregarArquivo();
         if (arq != null) {
             tipo.setText("Matriz de Adjacência");
@@ -82,21 +89,36 @@ public class MainController {
                 int i = 0;
                 while(raf.getFilePointer() < raf.length()) {
                     linha = raf.readLine();
-                    vetor = linha.split(" ");
-                    for (int j = 0; j < vetor.length; j++)
-                        matriz[i][j] = String.valueOf(vetor[j]);
+                    matriz[i] = linha.split(" ");
                     i++;
                 }
 
                 raf.close();
+                exibirMatriz();
+
+                if(MatAdjacencia.isOrientado(matriz))
+                    orientado.setText("Sim");
+                else
+                    orientado.setText("Não");
             } catch (Exception e) {
+                matrixGrid.getChildren().clear();
                 tipo.setText("Arquivo inválido");
             }
-            exibirMatriz();
         }
     }
 
-    public void onCarregarMI(ActionEvent actionEvent) {
+    public void exibirPropriedades(String tipo) {
+        switch (tipo) {
+            case "MA":
+                break;
+            case "MI":
+                orientado.setText(MatIncidencia.verificarOrientado(matriz,linhas)? "Sim" : "Não");
+                break;
+            case "LA":
+        }
+    }
+
+    public void onCarregarMI() {
         File arq = Arquivo.carregarArquivo();
         if (arq != null) {
             tipo.setText("Matriz de Incidência");
@@ -122,64 +144,34 @@ public class MainController {
                 matriz = new String[linhas][colunas];
 
                 int i = 0;
-                while(raf.getFilePointer() < raf.length()) {
+                while (raf.getFilePointer() < raf.length()) {
                     linha = raf.readLine();
-                    String[] vetorLinhaMatriz = linha.split(" ");
-                    for (int j = 0; j < vetorLinhaMatriz.length; j++)
-                        matriz[i][j] = vetorLinhaMatriz[j];
-                    i++;
+                    matriz[i++] = linha.split(" ");
                 }
 
                 raf.close();
-
+                exibirMatriz();
+                exibirPropriedades("MI");
             } catch (Exception e) {
+                matrixGrid.getChildren().clear();
                 tipo.setText("Arquivo inválido");
-                System.err.println(e.getMessage());
             }
-            exibirMatriz();
         }
     }
 
-    public void onCarregarLA(ActionEvent actionEvent) {
+    public void onCarregarLA() {
         File arq = Arquivo.carregarArquivo();
         if (arq != null) {
             tipo.setText("Lista de Adjacência");
             try {
                 RandomAccessFile raf = new RandomAccessFile(arq.getAbsolutePath(), "r");
 
-                String linha = raf.readLine();
-                String[] vetor = linha.split(" ");
-
-                vertices = new char[vetor.length];
-                incidencias = new String[vertices.length];
-
-                for (int i = 0; i < vetor.length; i++) {
-                    vertices[i] = vetor[i].charAt(0);
-                    incidencias[i] = String.valueOf(vertices[i]);
-                }
-
-                System.out.println(Arrays.toString(incidencias));
-
-                linhas = colunas = vetor.length;
-                matriz = new String[linhas][colunas];
-
-                for (int i = 0; i < vetor.length; i++)
-                    vertices[i] = vetor[i].charAt(0);
-
-                int i = 0;
-                while(raf.getFilePointer() < raf.length()) {
-                    linha = raf.readLine();
-                    vetor = linha.split(" ");
-                    for (int j = 0; j < vetor.length; j++)
-                        matriz[i][j] = String.valueOf(vetor[j].charAt(0));
-                    i++;
-                }
-
                 raf.close();
+                exibirLista();
             } catch (Exception e) {
+                matrixGrid.getChildren().clear();
                 tipo.setText("Arquivo inválido");
             }
-            exibirMatriz();
         }
     }
 }
