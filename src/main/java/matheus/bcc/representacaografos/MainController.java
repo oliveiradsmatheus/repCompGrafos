@@ -96,10 +96,47 @@ public class MainController {
                 raf.close();
                 exibirMatriz();
 
-                if(MatAdjacencia.isOrientado(matriz))
-                    orientado.setText("Sim");
+                //simples
+                if(MatAdjacencia.isSimples(matriz,colunas))
+                    simples.setText("Sim");
                 else
+                    simples.setText("Não");
+
+                //orientado
+                if(MatAdjacencia.isOrientado(matriz,linhas,colunas)) //digrafo
+                {
+                    orientado.setText("Sim");
+
+                    //regular
+                    if(MatAdjacencia.isDigrafoRegular(matriz,linhas,colunas))
+                        regular.setText("Sim");
+                    else
+                        regular.setText("Não");
+
+                    //completo
+                    if (MatAdjacencia.isDigrafoCompleto(matriz,colunas))
+                        completo.setText("Sim");
+                    else
+                        completo.setText("Não");
+                }
+                else{ //grafo
+
                     orientado.setText("Não");
+
+                    //regular
+                    if(MatAdjacencia.isGrafoRegular(matriz,linhas,colunas))
+                        regular.setText("Sim");
+                    else
+                        regular.setText("Não");
+
+                    //completo
+                    if (MatAdjacencia.isGrafoCompleto(matriz,linhas,colunas))
+                        completo.setText("Sim");
+                    else
+                        completo.setText("Não");
+                }
+
+
             } catch (Exception e) {
                 matrixGrid.getChildren().clear();
                 tipo.setText("Arquivo inválido");
