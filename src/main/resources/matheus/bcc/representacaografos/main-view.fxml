@@ -101,18 +101,40 @@
                     </font>
                 </Label>
             </HBox>
-            <HBox alignment="CENTER" layoutX="25.0" layoutY="133.0" prefHeight="25.0" prefWidth="170.0">
-                <Label prefHeight="80.0" text="Grafo Completo: " wrapText="true">
-                    <font>
-                        <Font size="13.0" />
-                    </font>
-                </Label>
-                <Label fx:id="completo" layoutX="47.0" layoutY="21.0" prefHeight="80.0" wrapText="true">
-                    <font>
-                        <Font name="System Bold" size="12.0" />
-                    </font>
-                </Label>
-            </HBox>
+         <HBox fx:id="hbEmissao" alignment="CENTER" layoutX="25.0" layoutY="184.0" prefHeight="25.0" prefWidth="170.0" visible="false">
+               <Label prefHeight="80.0" text="Emissão: " wrapText="true">
+                  <font>
+                     <Font size="13.0" />
+                  </font>
+               </Label>
+               <Label fx:id="emissao" layoutX="47.0" layoutY="21.0" prefHeight="80.0" wrapText="true">
+                  <font>
+                     <Font name="System Bold" size="13.0" />
+                  </font>
+               </Label>
+         </HBox>
+         <HBox fx:id="hbRecepcao" alignment="CENTER" layoutX="25.0" layoutY="256.0" prefHeight="25.0" prefWidth="170.0" visible="false">
+               <Label prefHeight="80.0" text="Recepção: " wrapText="true">
+                  <font>
+                     <Font size="13.0" />
+                  </font>
+               </Label>
+               <Label fx:id="recepcao" layoutX="47.0" layoutY="21.0" prefHeight="80.0" wrapText="true">
+                  <font>
+                     <Font name="System Bold" size="13.0" />
+                  </font>
+               </Label>
+         </HBox>
+             <Label fx:id="completo" prefHeight="21.0" prefWidth="106.0" text="Grafo Completo" textFill="ORANGE" visible="false">
+                 <font>
+                     <Font name="System Bold" size="14.0" />
+                 </font>
+             </Label>
+         <Label fx:id="labelK" alignment="CENTER" layoutX="57.0" layoutY="292.0" prefHeight="21.0" prefWidth="106.0" textFill="ORANGE">
+            <font>
+               <Font name="System Bold" size="14.0" />
+            </font>
+         </Label>
         </VBox>
     </left>
 </BorderPane>

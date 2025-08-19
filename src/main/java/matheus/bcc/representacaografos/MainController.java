@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 
 import java.io.File;
@@ -15,6 +16,11 @@ public class MainController {
     public Label regular;
     public Label orientado;
     public Label completo;
+    public HBox hbEmissao;
+    public Label emissao;
+    public HBox hbRecepcao;
+    public Label recepcao;
+    public Label labelK;
     @FXML
     private GridPane matrixGrid;
     private String[][] matriz;
@@ -144,17 +150,6 @@ public class MainController {
         }
     }
 
-    public void exibirPropriedades(String tipo) {
-        switch (tipo) {
-            case "MA":
-                break;
-            case "MI":
-                orientado.setText(MatIncidencia.verificarOrientado(matriz,linhas)? "Sim" : "Não");
-                break;
-            case "LA":
-        }
-    }
-
     public void onCarregarMI() {
         File arq = Arquivo.carregarArquivo();
         if (arq != null) {
@@ -188,7 +183,43 @@ public class MainController {
 
                 raf.close();
                 exibirMatriz();
-                exibirPropriedades("MI");
+
+                boolean simp = MatIncidencia.verificarSimples(matriz, linhas);
+                simples.setText(simp ? "Sim" : "Não");
+                if(MatIncidencia.verificarOrientado(matriz, linhas)) {
+                    orientado.setText("Sim");
+                    regular.setText("");
+                    hbRecepcao.setVisible(true);
+                    hbEmissao.setVisible(true);
+
+                    int e = MatIncidencia.verificarEmissao(matriz, linhas);
+                    int r = MatIncidencia.verificarRecepcao(matriz, linhas);
+
+                    emissao.setText(e == -1 ? "Não" : e + "-regular");
+                    recepcao.setText(r == -1 ? "Não" : r + "-regular");
+                } else {
+                    orientado.setText("Não");
+                    hbRecepcao.setVisible(false);
+                    hbEmissao.setVisible(false);
+                    int n = MatIncidencia.verificarRegular(matriz, linhas);
+                    if (n == -1)
+                        regular.setText("Não");
+                    else {
+                        regular.setText(n + "-regular");
+                        if (simp) {
+                            int k = MatIncidencia.verificarCompleto(matriz, linhas);
+                            if (k != -1) {
+                                completo.setVisible(true);
+                                labelK.setVisible(true);
+                                labelK.setText("K-" + linhas);
+                            } else {
+                                completo.setVisible(false);
+                                labelK.setVisible(false);
+                            }
+                        }
+                    }
+                }
+
             } catch (Exception e) {
                 matrixGrid.getChildren().clear();
                 tipo.setText("Arquivo inválido");

@@ -12,26 +12,73 @@ public class MatIncidencia {
         return orientado;
     }
 
-    public static boolean verificarSimples(String[] inc) {
+    public static boolean verificarSimples(String[][] mat, int linhas) {
         boolean simples = true;
+        int cont;
+        boolean flag;
 
-        for (int i = 0; i < inc.length && simples; i++)
-            if (inc[i].charAt(0) == inc[i].charAt(2))
+        for (int c = 0; c < mat[0].length && simples; c++) {
+            cont = 0;
+            for (int l = 0; l < linhas; l++)
+                if(!mat[l][c].equals("0"))
+                    cont++;
+            if (cont <= 1)
                 simples = false;
+        }
 
+        for (int l = 0; l < linhas - 1 && simples; l++) {
+            flag = true;
+            for (int c = 0; c < mat[0].length && flag; c++) {
+                if (!mat[l][c].equals("0")) {
+                    cont = 0;
+                    for (int i = c + 1; i < mat[0].length && flag; i++) {
+                        if (!mat[l][i].equals("0")) {
+                            cont++;
+                            int j;
+                            for (j = l+1 ; j < linhas && mat[j][c].equals(mat[j][i]); j++);
+                            if (j == linhas)
+                                simples = flag = false;
+                        }
+                    }
+                    if (cont<2)
+                        flag = false;
+                }
+            }
+        }
         return simples;
     }
 
-    public static boolean verificarRegular(String[][] mat, int linhas) {
+    public static int verificarRegular(String[][] mat, int linhas) {
+        boolean regular = true;
+        int cont1 = 0, cont2;
+
+        for(int i = 0; i < linhas - 1 && regular; i++) {
+            cont1 = cont2 = 0;
+            for (int j = 0; j < mat[0].length; j++) {
+                if (!mat[i][j].equals("0"))
+                    cont1++;
+                if (!mat[i + 1][j].equals("0"))
+                    cont2++;
+            }
+            if (cont1 != cont2)
+                regular = false;
+        }
+
+        if (regular)
+            return cont1;
+        return -1;
+    }
+
+    public static int verificarEmissao(String[][] mat, int linhas) {
         boolean regular = true;
         int ant = 0, atual = 0;
 
         for (int i = 0; i < linhas; i++)
-            if(Integer.parseInt(mat[0][i]) != 0)
+            if(Integer.parseInt(mat[0][i]) < 0)
                 ant++;
         for(int i = 1; i < linhas && regular; i++) {
             for (int j = 0; j < mat[0].length; j++)
-                if(Integer.parseInt(mat[i][j]) != 0)
+                if(Integer.parseInt(mat[i][j]) < 0)
                     atual++;
             if (atual != ant)
                 regular = false;
@@ -39,42 +86,48 @@ public class MatIncidencia {
             atual = 0;
         }
 
-        return regular;
+        if (regular)
+            return ant;
+        return -1;
     }
 
-    private static boolean arestaExiste(char v1, char v2, String[] incidencias) {
-        v1 = Character.toLowerCase(v1);
-        v2 = Character.toLowerCase(v2);
-        for (String aresta : incidencias) {
-            String arestaLower = aresta.toLowerCase();
-            String[] par = arestaLower.split(",");
+    public static int verificarRecepcao(String[][] mat, int linhas) {
+        boolean regular = true;
+        int ant = 0, atual = 0;
 
-            if (par.length == 2) {
-                char p1 = par[0].charAt(0);
-                char p2 = par[1].charAt(0);
-                if ((p1 == v1 && p2 == v2) || (p1 == v2 && p2 == v1)) {
-                    return true;
-                }
-            }
+        for (int i = 0; i < linhas; i++)
+            if(Integer.parseInt(mat[0][i]) > 0)
+                ant++;
+        for(int i = 1; i < linhas && regular; i++) {
+            for (int j = 0; j < mat[0].length; j++)
+                if(Integer.parseInt(mat[i][j]) > 0)
+                    atual++;
+            if (atual != ant)
+                regular = false;
+            ant = atual;
+            atual = 0;
         }
 
-        return false;
+        if (regular)
+            return ant;
+        return -1;
     }
 
-    public static boolean verificarCompleto(char[] vertices, String[] incidencias) {
-        int numVertices = vertices.length;
+    public static int verificarCompleto(String[][] mat, int linhas) {
+        int k, cont = 0;
 
-        if (numVertices <= 1) {
-            return true;
-        }
-        for (int i = 0; i < numVertices; i++) {
-            for (int j = i + 1; j < numVertices; j++) {
-                char vertice1 = vertices[i];
-                char vertice2 = vertices[j];
-                if (!arestaExiste(vertice1, vertice2, incidencias))
-                    return false;
-            }
-        }
-        return true;
+        for (int i= 0; i < linhas; i++)
+            for(int j = 0; j < mat[0].length; j++)
+                if (!mat[i][j].equals("0"))
+                    cont++;
+
+        k = (linhas*(linhas-1));
+
+        System.out.println(k);
+        System.out.println(cont);
+
+        if (k == cont)
+            return k/2;
+        return -1;
     }
 }
