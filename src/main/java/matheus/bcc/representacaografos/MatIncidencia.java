@@ -66,8 +66,8 @@ public class MatIncidencia {
         boolean regular = true;
         int ant = 0, atual = 0;
 
-        for (int i = 0; i < linhas; i++)
-            if(Integer.parseInt(mat[i][0]) < 0)
+        for (int i = 0; i < mat[0].length; i++)
+            if(Integer.parseInt(mat[0][i]) < 0)
                 ant++;
         for(int i = 1; i < linhas && regular; i++) {
             for (int j = 0; j < mat[0].length; j++)
@@ -88,8 +88,8 @@ public class MatIncidencia {
         boolean regular = true;
         int ant = 0, atual = 0;
 
-        for (int i = 0; i < linhas; i++)
-            if(Integer.parseInt(mat[i][0]) > 0)
+        for (int i = 0; i < mat[0].length; i++)
+            if(Integer.parseInt(mat[0][i]) > 0)
                 ant++;
         for(int i = 1; i < linhas && regular; i++) {
             for (int j = 0; j < mat[0].length; j++)
