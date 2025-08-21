@@ -28,10 +28,12 @@ public class MatIncidencia {
         for (int c1 = 0; c1 < mat[0].length - 1 && simples; c1++) {
             for (int c2 = c1 + 1; c2 < mat[0].length && simples; c2++) {
                 boolean flag = true;
-                for (int l = 0; l < linhas && flag; l++) {
+                for (int l = 0; l < linhas && flag; l++)
                     if (!mat[l][c1].equals(mat[l][c2]))
-                        flag = false;
-                }
+                        if (mat[l][c1].equals("0") || mat[l][c2].equals("0"))
+                            flag = false;
+                        else if (Integer.parseInt(mat[l][c1]) > 0 && Integer.parseInt(mat[l][c2]) < 0 || Integer.parseInt(mat[l][c1]) < 0 && Integer.parseInt(mat[l][c2]) > 0)
+                            flag = false;
                 if (flag)
                     simples = false;
             }
@@ -65,7 +67,7 @@ public class MatIncidencia {
         int ant = 0, atual = 0;
 
         for (int i = 0; i < linhas; i++)
-            if(Integer.parseInt(mat[0][i]) < 0)
+            if(Integer.parseInt(mat[i][0]) < 0)
                 ant++;
         for(int i = 1; i < linhas && regular; i++) {
             for (int j = 0; j < mat[0].length; j++)
@@ -87,7 +89,7 @@ public class MatIncidencia {
         int ant = 0, atual = 0;
 
         for (int i = 0; i < linhas; i++)
-            if(Integer.parseInt(mat[0][i]) > 0)
+            if(Integer.parseInt(mat[i][0]) > 0)
                 ant++;
         for(int i = 1; i < linhas && regular; i++) {
             for (int j = 0; j < mat[0].length; j++)

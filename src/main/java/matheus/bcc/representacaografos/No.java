@@ -1,17 +1,17 @@
 package matheus.bcc.representacaografos;
 
-public class Lista {
-    char info;
-    String peso;
-    Lista prox;
+public class No {
+    private char info;
+    private String peso;
+    private No prox;
 
-    public Lista(char info) {
+    public No(char info) {
         this.info = info;
         this.peso = "0";
         this.prox = null;
     }
 
-    public Lista(char info, String peso) {
+    public No(char info, String peso) {
         this.info = info;
         this.peso = peso;
         this.prox = null;
@@ -33,11 +33,11 @@ public class Lista {
         this.peso = peso;
     }
 
-    public Lista getProx() {
+    public No getProx() {
         return prox;
     }
 
-    public void setProx(Lista prox) {
+    public void setProx(No prox) {
         this.prox = prox;
     }
 }
